@@ -81,6 +81,10 @@ class Demo(BrowserView):
                        id='One Page', 
                        title='One page', 
                        description='Description for "One page"', text='<h2>Heading 1</h2><h3>Heading 2</h3><h4>Heading 3</h4>')
+        createDocument(content_folder.section1.subsection11,
+                       id='Another Page', 
+                       title='Another page', 
+                       description='Description for "Another page"', text='<h2>Another Heading 1</h2><h3>Another Heading 2</h3><h4>Another Heading 3</h4>')
 
         #####################################
         # Leitlinie
