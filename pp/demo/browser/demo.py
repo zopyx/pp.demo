@@ -30,6 +30,24 @@ TUTORIAL_FILES = (
 'lesson13.html',
 'lesson15.html')
 
+def createDocument(folder, id, title='', description='', text=''):
+    folder.invokeFactory('AuthoringContentPage', id=id)
+    doc = folder[id]
+    doc.setTitle(title)
+    doc.setDescription(description)
+    doc.setText(text)
+    doc.getField('text').setContentType(doc, 'text/html')
+    doc.reindexObject()
+
+def createFolder(folder, id, title='', description=''):
+
+    folder.invokeFactory('AuthoringContentFolder', id=id)
+    folder2 = folder[id]
+    folder2.setTitle(title)
+    folder2.setDescription(description)
+    folder2.reindexObject()
+
+
 class Demo(BrowserView):
 
     def __call__(self):
@@ -42,6 +60,27 @@ class Demo(BrowserView):
 
         self.context.invokeFactory('AuthoringProject', id=project_id, title=title)
         project = self.context[project_id]
+
+
+    
+        #####################################
+        # nested folders
+        #####################################
+
+        view = project.restrictedTraverse('add-new-authoringproject')
+        view('Nested')
+        content_folder = project['contents']['nested']
+        content_folder.manage_delObjects(content_folder.objectIds())
+        createFolder(content_folder, id='section1', title='Section 1', description='Section 1')
+        createFolder(content_folder, id='section2', title='Section 2', description='Section 2')
+        createFolder(content_folder.section1, id='subsection11', title='Subsection 1.2', description='Subsection 1.1')
+        createFolder(content_folder.section1, id='subsection12', title='Subsection 1.2', description='Subsection 1.2')
+        createFolder(content_folder.section2, id='subsection21', title='Subsection 2.1', description='Subsection 2.1')
+        createFolder(content_folder.section2, id='subsection22', title='Subsection 2.2', description='Subsection 2.2')
+        createDocument(content_folder.section1.subsection11,
+                       id='One Page', 
+                       title='One page', 
+                       description='Description for "One page"', text='<h2>Heading 1</h2><h3>Heading 2</h3><h4>Heading 3</h4>')
 
         #####################################
         # Leitlinie
