@@ -1,5 +1,4 @@
 from base import TestCase
-from Testing.makerequest import makerequest
 
 class TestDemoContent(TestCase):
 
