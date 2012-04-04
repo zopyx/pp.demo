@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.3'
+version = '1.4'
 
 setup(name='pp.demo',
       version=version,
@@ -24,6 +24,7 @@ setup(name='pp.demo',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'loremipsum',
           # -*- Extra requirements: -*-
       ],
       entry_points="""

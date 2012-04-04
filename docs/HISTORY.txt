@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4 (2012/04/04)
+----------------
+- added 'index terms'
+
 1.3 (2011/11/14)
 ----------------
 - added 'nested conent'

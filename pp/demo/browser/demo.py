@@ -6,6 +6,7 @@
 import os
 import glob
 import lxml.html
+import loremipsum
 from Products.Five.browser import BrowserView
 
 UNICODE_DIR = os.path.join(os.path.dirname(__file__), 'unicode')
@@ -48,6 +49,18 @@ def createFolder(folder, id, title='', description=''):
     folder2.reindexObject()
 
 
+def gen_paragraphs(num=3):
+    return u'/'.join([p[2] for p in loremipsum.Generator().generate_paragraphs(num)])
+
+def gen_sentences(length=80):
+    return u' '.join([s[2] for s in loremipsum.Generator().generate_sentences(length)])
+
+def gen_sentence(max_words=None):
+    text = loremipsum.Generator().generate_sentence()[-1]
+    if max_words:
+        return u' '.join(text.split(' ')[:max_words])
+    return text
+
 class Demo(BrowserView):
 
     def __call__(self):
@@ -61,8 +74,25 @@ class Demo(BrowserView):
         self.context.invokeFactory('AuthoringProject', id=project_id, title=title)
         project = self.context[project_id]
 
+        #####################################
+        # Index terms
+        #####################################
 
-    
+        view = project.restrictedTraverse('add-new-authoringproject')
+        view('Index Terms')
+        content_folder = project['contents']['index-terms']
+        content_folder.manage_delObjects(content_folder.objectIds())
+        for i in range(1,11):
+            index_terms = gen_sentence(10).split()
+            html_index = '\n'.join(['<span class="index-term">%s</span>' % term for term in index_terms])
+            html ='<h2>Page %d</h2><div>%s</div>Index terms: %s' % (i, gen_paragraphs(3), html_index)
+            createDocument(content_folder,
+                           id='page%d' % i,
+                           title='Page %d' %i, 
+                           description=gen_paragraphs(1),
+                           text=html,
+                           )
+
         #####################################
         # nested folders
         #####################################
