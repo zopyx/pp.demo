@@ -7,6 +7,7 @@ import os
 import glob
 import lxml.html
 import loremipsum
+import urllib2
 from Products.Five.browser import BrowserView
 
 UNICODE_DIR = os.path.join(os.path.dirname(__file__), 'unicode')
@@ -31,6 +32,10 @@ TUTORIAL_FILES = (
 'lesson13.html',
 'lesson15.html')
 
+def random_image(width, height):
+    url = 'http://lorempixel.com/%d/%d/' % (width, height)
+    return urllib2.urlopen(url).read()
+
 def createDocument(folder, id, title='', description='', text=''):
     folder.invokeFactory('AuthoringContentPage', id=id)
     doc = folder[id]
@@ -40,8 +45,18 @@ def createDocument(folder, id, title='', description='', text=''):
     doc.getField('text').setContentType(doc, 'text/html')
     doc.reindexObject()
 
-def createFolder(folder, id, title='', description=''):
+def createNewsitem(folder, id, title='', description='', text=''):
+    folder.invokeFactory('News Item', id=id)
+    doc = folder[id]
+    doc.setTitle(title)
+    doc.setDescription(description)
+    doc.setText(text)
+    doc.setImage(random_image(300,300))
+    doc.getField('text').setContentType(doc, 'text/html')
+    doc.reindexObject()
 
+
+def createFolder(folder, id, title='', description=''):
     folder.invokeFactory('AuthoringContentFolder', id=id)
     folder2 = folder[id]
     folder2.setTitle(title)
@@ -65,6 +80,10 @@ class Demo(BrowserView):
 
     def __call__(self):
 
+        types = list(self.context.portal_types['AuthoringContentFolder'].allowed_content_types)
+        if not 'News Item' in types:
+            self.context.portal_types['AuthoringContentFolder'].allowed_content_types = tuple(types + ['News Item'])
+
         project_id= 'demo-project'
         title = 'Produce & Publishing Demo Authoring Project'
 
@@ -73,6 +92,25 @@ class Demo(BrowserView):
 
         self.context.invokeFactory('AuthoringProject', id=project_id, title=title)
         project = self.context[project_id]
+
+        #####################################
+        # News
+        #####################################
+
+        view = project.restrictedTraverse('add-new-authoringproject')
+        view('News')
+        content_folder = project['contents']['news']
+        content_folder.manage_delObjects(content_folder.objectIds())
+
+        for i in range(1,11):
+            html ='<h2>Newsitem %d</h2><p>%s</p>' % (i, gen_paragraphs(3))
+            createNewsitem(content_folder,
+                           id='news-%d' % i,
+                           title='Page %d' %i, 
+                           description=gen_paragraphs(1),
+                           text=html,
+                           )
+
 
         #####################################
         # Index terms
