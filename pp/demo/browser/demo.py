@@ -5,6 +5,7 @@
 
 import os
 import glob
+import random
 import lxml.html
 import loremipsum
 import urllib2
@@ -51,7 +52,7 @@ def createNewsitem(folder, id, title='', description='', text=''):
     doc.setTitle(title)
     doc.setDescription(description)
     doc.setText(text)
-    doc.setImage(random_image(300,300))
+    doc.setImage(random_image(400+random.randint(-100, 100), 400+random.randint(-100, 100)))
     doc.getField('text').setContentType(doc, 'text/html')
     doc.reindexObject()
 
