@@ -107,10 +107,29 @@ class Demo(BrowserView):
             html ='<h2>Newsitem %d</h2><p>%s</p>' % (i, gen_paragraphs(3))
             createNewsitem(content_folder,
                            id='news-%d' % i,
-                           title='Page %d' %i, 
+                           title=gen_sentence(6),
                            description=gen_paragraphs(1),
                            text=html,
                            )
+
+        #####################################
+        # News
+        #####################################
+
+        view = project.restrictedTraverse('add-new-authoringproject')
+        view('Mitarbeiterzeitschrift')
+        content_folder = project['contents']['mitarbeiterzeitschrift']
+        content_folder.manage_delObjects(content_folder.objectIds())
+
+        for i in range(1,10):
+            html ='<h2>Newsitem %d</h2><p>%s</p>' % (i, gen_paragraphs(1))
+            createNewsitem(content_folder,
+                           id='news-%d' % i,
+                           title=gen_sentence(6),
+                           description=gen_paragraphs(1),
+                           text=html,
+                           )
+
 
 
         #####################################
