@@ -81,6 +81,13 @@ class Demo(BrowserView):
 
     def __call__(self):
 
+        acl_users = self.context.acl_users
+
+        try:
+            self.context.portal_registration.addMember('demo', 'demo')
+        except ValueError:
+            pass
+
         types = list(self.context.portal_types['AuthoringContentFolder'].allowed_content_types)
         if not 'News Item' in types:
             self.context.portal_types['AuthoringContentFolder'].allowed_content_types = tuple(types + ['News Item'])
@@ -90,9 +97,11 @@ class Demo(BrowserView):
 
         if project_id in self.context.objectIds():
             self.context.manage_delObjects(project_id)
+            self.context.Control_Panel.Database['main'].manage_pack()
 
         self.context.invokeFactory('AuthoringProject', id=project_id, title=title)
         project = self.context[project_id]
+        project.manage_setLocalRoles('demo', ['Contributor', 'Editor', 'Reviewer', 'Owner'])
 
         #####################################
         # News
