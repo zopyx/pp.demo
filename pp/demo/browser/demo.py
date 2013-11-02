@@ -101,6 +101,7 @@ class Demo(BrowserView):
 
         self.context.invokeFactory('AuthoringProject', id=project_id, title=title)
         project = self.context[project_id]
+        project.portal_workflow.doActionFor(project, 'publish')
         project.manage_setLocalRoles('demo', ['Contributor', 'Editor', 'Reviewer', 'Owner'])
 
         #####################################
