@@ -89,7 +89,7 @@ class Demo(BrowserView):
             pass
 
         types = list(self.context.portal_types['AuthoringContentFolder'].allowed_content_types)
-        if not 'News Item' in types:
+        if 'News Item' not in types:
             self.context.portal_types['AuthoringContentFolder'].allowed_content_types = tuple(types + ['News Item'])
 
         project_id= 'demo-project'
@@ -197,7 +197,7 @@ class Demo(BrowserView):
         page.setText(file(os.path.join(LL_DIR, 'index.html')).read())
         page.getField('text').setContentType(page, 'text/html')
         page.processForm() # trigger subscribers
-        for img in glob.glob('%s/*jp*' % LL_DIR):
+        for img in glob.glob(f'{LL_DIR}/*jp*'):
             base = os.path.basename(img)
             content_folder.invokeFactory('Image', id=base)
             content_folder[base].setImage(file(img, 'rb').read())
@@ -215,7 +215,7 @@ class Demo(BrowserView):
         page.setText(file(os.path.join(PICTURES_DIR, 'index.html')).read())
         page.getField('text').setContentType(page, 'text/html')
         page.processForm() # trigger subscribers
-        for img in glob.glob('%s/*jp*' % PICTURES_DIR):
+        for img in glob.glob(f'{PICTURES_DIR}/*jp*'):
             base = os.path.basename(img)
             content_folder.invokeFactory('Image', id=base)
             content_folder[base].setTitle(base)
@@ -230,7 +230,7 @@ class Demo(BrowserView):
         view('Unicode')
         content_folder = project['contents']['unicode']
         content_folder.manage_delObjects(content_folder.objectIds())
-        for name in glob.glob(UNICODE_DIR + '/*.html'):
+        for name in glob.glob(f'{UNICODE_DIR}/*.html'):
             basename = os.path.splitext(os.path.basename(name))[0]
             content_folder.invokeFactory('AuthoringContentPage', id=basename, title=basename)
             page = content_folder[basename]
@@ -246,7 +246,7 @@ class Demo(BrowserView):
         view('Lots-of-Content')
         content_folder = project['contents']['lots-of-content']
         content_folder.manage_delObjects(content_folder.objectIds())
-        for name in glob.glob(LOTSOFCONTENT_DIR + '/*.html'):
+        for name in glob.glob(f'{LOTSOFCONTENT_DIR}/*.html'):
             basename = os.path.splitext(os.path.basename(name))[0]
             content_folder.invokeFactory('AuthoringContentPage', id=basename, title=basename)
             page = content_folder[basename]
@@ -263,7 +263,7 @@ class Demo(BrowserView):
         view('Unicode-Data')
         content_folder = project['contents']['unicode-data']
         content_folder.manage_delObjects(content_folder.objectIds())
-        for name in glob.glob(UNICODE_DATA_DIR + '/*.html'):
+        for name in glob.glob(f'{UNICODE_DATA_DIR}/*.html'):
             basename = os.path.splitext(os.path.basename(name))[0]
             content_folder.invokeFactory('AuthoringContentPage', id=basename, title=basename)
             page = content_folder[basename]
